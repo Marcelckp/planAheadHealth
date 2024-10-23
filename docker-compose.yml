@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  server:
+    image: ./server
+    container_name: server
+    volumes:
+      - ./server:/app
+    working_dir: /app
+    command: go run main.go
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  client:
+    image: ./client
+    container_name: client
+    volumes:
+      - ./client:/app
+    working_dir: /app
+    command: npm start
+    ports:
+      - "3000:5173"
+    depends_on:
+      - server
+
+  db:
+    image: nouchka/sqlite3
+    container_name: sqlite_db
+    volumes:
+      - ./data:/data
+    command: sqlite3 /data/database.db
